@@ -1,0 +1,70 @@
+--- Create Database
+
+CREATE DATABASE little_lemon
+
+--- Use created Database
+
+USE little_lemon
+
+--- Create Customers Table
+
+CREATE TABLE IF NOT EXISTS Customers (
+    CustomerID     INT NOT NULL PRIMARY KEY,
+    FullName        VARCHAR(50),
+    PhoneNumber     INT NOT NULL UNIQUE);
+
+--- Insert Values into Customers Table
+
+INSERT INTO Customers (
+     CustomerID, FullName, PhoneNumber) 
+VALUES
+    (1, "Vanessa McCarthy", 0757536378), (2, "Marcos Romero", 0757536379),
+    (3, "Hiroki Yamane", 0757536376), (4, "Anna Iversen", 0757536375),
+    (5, "Diana Pinto", 0757536374);
+
+--- Create Bookings Table
+
+CREATE TABLE Bookings
+    (BookingID      INT NOT NULL PRIMARY KEY,
+    BookingDate     DATE NOT NULL,
+    TableNumber     INT NOT NULL,
+    NumberOfGuests  INT NOT NULL CHECK (NumberOfGuests <= 8),
+    CustomerID      INT NOT NULL,
+    FOREIGN KEY (CustomerID) REFERENCES Customers (CustomerID) ON DELETE CASCADE ON UPDATE CASCADE);
+
+--- Insert Values into Bookings Table
+
+INSERT INTO Bookings (
+    BookingID, BookingDate, TableNumber, NumberOfGuests, CustomerID)
+VALUES
+    (10, '2021-11-11', 7, 5, 1),
+    (11, '2021-11-10', 5, 2, 2),
+    (12, '2021-11-10', 3, 2, 4);  
+
+--- Task 1: Little Lemon want a list of all customers who have made bookings.
+--- Write an INNER JOIN SQL statement to combine the full name and the phone number of each
+--- customer from the Customers table with the related booking date and 'number of guests' 
+--- from the Bookings table. The expected output result should be the same as the following screenshot 
+--- (assuming that you have created and populate the tables correctly.) 
+
+SELECT
+    c.FullName,
+    c.PhoneNumber,
+    b.BookingDate,
+    b.NumberOfGuests
+FROM
+    Customers c JOIN Bookings b 
+    ON c.CustomerID = b.CustomerID;
+
+--- Task 2: Little Lemon want to view information about all existing customers with bookings
+--- that have been made so far. This data must include customers who haven’t made any booking yet.
+--- Write a LEFT JOIN SQL statement to view the customer id from Customers table and the related
+--- booking id from the Bookings table. The expected output result should be the same as the 
+--- following screenshot (assuming that you have created and populate the tables correctly.)
+
+SELECT
+    c.CustomerID,
+    b.BookingID
+FROM
+    Customers c LEFT JOIN Bookings b 
+    ON c.CustomerID = b.CustomerID;
